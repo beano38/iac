@@ -1,0 +1,15 @@
+---
+render_config:
+  template: bootstrap_xrv9000.j2
+  type: iosxr
+
+cml:
+  image_def: iosxrv9000-7-2-1
+  node_def: iosxrv9000
+
+nso:
+  ned: cisco-iosxr-cli-7.36
+
+# Netbox Stuff
+device_type: xrv9k
+platform: iosxr

@@ -1,0 +1,60 @@
+---
+
+- name: Install packages needed for netsim
+  become: True
+  apt:
+    name: xsltproc
+    state: present
+    update_cache: True
+    cache_valid_time: 3600
+
+- name: Create netsim device network
+  shell: source {{ install_dir }}/ncsrc && ncs-netsim create-device {{ hostvars[netsim_hosts[0]].nso.ned }} test
+  args:
+    executable: /bin/bash
+  ignore_errors: True
+
+- name: Add to netsim device network
+  shell: source {{ install_dir }}/ncsrc && ncs-netsim add-device {{ hostvars[item].nso.ned }} {{ hostvars[item].hostname }}
+  args:
+    executable: /bin/bash
+  loop: "{{ netsim_hosts }}"
+  ignore_errors: True
+
+# - name: Start netsim devices
+#   shell: source {{ install_dir }}/ncsrc && ncs-netsim start
+#   args:
+#     executable: /bin/bash
+#   ignore_errors: True
+
+- name: Create netsim list to add to NSO devices
+  shell: source {{ install_dir }}/ncsrc && ncs-netsim ncs-xml-init > devices.xml
+  args:
+    executable: /bin/bash
+    # creates: devices.xml
+  ignore_errors: True
+
+- name: Load devices into NSO
+  shell: source {{ install_dir }}/ncsrc && ncs_load -l -m devices.xml
+  args:
+    executable: /bin/bash
+  ignore_errors: True
+
+- name: Netsim Status
+  shell: source {{ install_dir }}/ncsrc && ncs-netsim status | grep DEVICE
+  args:
+    executable: /bin/bash
+  register:
+    ns_status
+  ignore_errors: True
+
+- name: Debugging
+  debug:
+    msg: "{{ ns_status }}"
+
+- name: Sync from all Network Elements
+  nso_action:
+    url: "{{ api_url }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+    path: /ncs:devices/sync-from

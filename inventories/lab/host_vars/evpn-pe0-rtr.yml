@@ -1,0 +1,22 @@
+---
+hostname: evpn-pe0-rtr
+mgmt_ip: 172.16.100.40
+id: 40
+
+interfaces:
+  - type: MgmtEth0/RP0/CPU0/
+    number: 0
+    remote_node_id: 100
+  - type: Loopback
+    number: 0
+  - type: GigabitEthernet
+    number: 0/0/0/0
+    remote_node_id: 10
+  - type: GigabitEthernet
+    number: 0/0/0/1
+    remote_node_id: 11
+
+rack:
+  name: R-01-01-01
+  position: 21
+  face: front

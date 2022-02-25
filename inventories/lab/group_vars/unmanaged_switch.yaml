@@ -1,0 +1,9 @@
+---
+cml:
+  image_def: False
+  node_def: unmanaged_switch
+
+# Netbox Stuff
+device_type: cml_unmanaged_switch
+
+platform: virtual

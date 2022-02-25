@@ -1,0 +1,4 @@
+collections:
+  - name: cisco.cml
+  - name: cisco.nso
+  - name: netbox.netbox

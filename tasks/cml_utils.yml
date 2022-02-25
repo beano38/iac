@@ -1,0 +1,84 @@
+---
+- name: "Create CML Topology in Server {{ hostname }}"
+  cml_lab:
+    host: "{{ hostname }}"
+    user: "{{ username }}"
+    password: "{{ password }}"
+    lab: "{{ lab_name }}"
+    state: present
+    file: temp/topology.yaml
+  tags: [ 'never', 'generate_cml' ]
+
+- name: Start Nodes
+  cml_node:
+    name: "{{ item }}"
+    host: "{{ hostname }}"
+    user: "{{ username }}"
+    password: "{{ password }}"
+    lab: "{{ lab_name }}"
+    state: started
+  loop: "{{ devices | upper }}"
+  tags: [ 'never', 'generate_cml' ]
+
+- name: Get Lab Status
+  cml_lab_facts:
+    host: "{{ hostname }}"
+    user: "{{ username }}"
+    password: "{{ password }}"
+    lab: "{{ lab_name }}"
+  tags: [ 'never', 'destroy_cml' ]
+  register: lab_facts
+
+- name: Stop Nodes
+  cml_node:
+    name: "{{ item }}"
+    host: "{{ hostname }}"
+    user: "{{ username }}"
+    password: "{{ password }}"
+    lab: "{{ lab_name }}"
+    state: stopped
+  loop: "{{ devices | upper }}"
+  tags: [ 'never', 'destroy_cml' ]
+  when: lab_facts.cml_facts.details is defined
+
+- name: Wipe Nodes
+  cml_node:
+    name: "{{ item }}"
+    host: "{{ hostname }}"
+    user: "{{ username }}"
+    password: "{{ password }}"
+    lab: "{{ lab_name }}"
+    state: wiped
+  loop: "{{ devices | upper }}"
+  tags: [ 'never', 'destroy_cml' ]
+  when: lab_facts.cml_facts.details is defined
+
+- name: Wipe Lab
+  cml_lab:
+    host: "{{ hostname }}"
+    user: "{{ username }}"
+    password: "{{ password }}"
+    lab: "{{ lab_name }}"
+    state: wiped
+  tags: [ 'never', 'destroy_cml' ]
+  when: lab_facts.cml_facts.details is defined
+
+- name: Stop Lab
+  cml_lab:
+    host: "{{ hostname }}"
+    user: "{{ username }}"
+    password: "{{ password }}"
+    lab: "{{ lab_name }}"
+    state: stopped
+  tags: [ 'never', 'destroy_cml' ]
+  when: lab_facts.cml_facts.details is defined
+
+- name: Remove Lab
+  cml_lab:
+    host: "{{ hostname }}"
+    user: "{{ username }}"
+    password: "{{ password }}"
+    lab: "{{ lab_name }}"
+    state: absent
+  tags: [ 'never', 'destroy_cml' ]
+  when: lab_facts.cml_facts.details is defined

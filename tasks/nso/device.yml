@@ -1,0 +1,32 @@
+---
+- name: Add Devices to NSO
+  nso_config:
+    url: "{{ api.api_url }}"
+    username: "{{ api.username }}"
+    password: "{{ api.password }}"
+    data:
+      tailf-ncs:devices:
+        device:
+        - name: "{{ hostname }}"
+          address: "{{ mgmt_ip }}"
+          port: "{{ port | default(23)}}"
+          authgroup: "{{ api.auth.name }}"
+          device-type:
+            cli:
+              ned-id: "{{ nso.ned }}"
+          state:
+            admin-state: unlocked
+  when: install_state == "present"
+
+- name: Delete Devices from NSO
+  nso_config:
+    url: "{{ api.api_url }}"
+    username: "{{ api.username }}"
+    password: "{{ api.password }}"
+    data:
+      tailf-ncs:devices:
+        device:
+        - name: "{{ hostname }}"
+          __state: absent
+  when: install_state == "absent"
+  tags: [ 'never', 'destroy' ]

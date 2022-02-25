@@ -1,0 +1,14 @@
+---
+site:
+  name: Virtual Lab - CML
+  slug: virtsite
+  id: 9999
+  time_zone: America/New_York
+
+contact:
+  name: Virtual Shmoe
+  email: virtual@shmoe.com
+  phone: 555-555-5555
+
+# Netbox Stuff
+device_role: mgmt-sw

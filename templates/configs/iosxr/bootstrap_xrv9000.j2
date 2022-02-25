@@ -1,0 +1,53 @@
+!! IOSXR
+!
+username cisco
+ group root-lr
+ group cisco-support
+ secret cisco
+!
+hostname {{ hostname }}
+!
+vrf {{ vrf_name }}
+ address-family ipv4 unicast
+!
+interface MgmtEth0/RP0/CPU0/0
+ no ipv4 addresss
+ vrf {{ vrf_name }}
+ ipv4 address dhcp-client-options
+ option 61 ascii {{ hostname }}
+ ipv4 address dhcp
+ no shutdown
+!
+router static
+ vrf {{ vrf_name }}
+ address-family ipv4 unicast
+  0.0.0.0/0 {{ gateway }}
+!
+radius-server host {{ aaa_hostname }} auth-port 1812 acct-port 1813
+ key {{ aaa_key }}
+!
+aaa group server radius RADGRP
+ server {{ aaa_hostname }} auth-port 1812 acct-port 1813
+ vrf {{ vrf_name }}
+ source-interface MgmtEth0/RP0/CPU0/0
+!
+aaa authentication login RADLOGIN group RADGRP local
+!
+line template VTY
+ login authentication RADLOGIN
+ exec-timeout 0 0
+!
+vty-pool default 0 99 line-template VTY
+!
+ssh server v2
+ssh server vrf {{ vrf_name }}
+!
+control-plane
+ management-plane
+  inband
+   interface all
+    allow all
+   !
+  !
+ !
+!

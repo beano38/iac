@@ -1,0 +1,21 @@
+---
+
+- name: Setup {{ region.name }} Region
+  netbox_region:
+    netbox_url: "{{ netbox.url }}"
+    netbox_token: "{{ netbox.token }}"
+    data:
+      name: "{{ region.name }}"
+      slug: "{{ region.slug | lower }}"
+      parent_region: "{{ region.parent_region | lower }}"
+    state: "{{ netbox_state }}"
+  when: region.parent_region is defined and netbox_state == 'present'
+
+- name: Remove Region
+  netbox_region:
+    netbox_url: "{{ netbox.url }}"
+    netbox_token: "{{ netbox.token }}"
+    data:
+      name: "{{ region.name }}"
+    state: "{{ netbox_state }}"
+  when: netbox_state == 'absent'

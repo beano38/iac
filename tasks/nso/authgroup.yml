@@ -1,0 +1,34 @@
+---
+- name: Create Auth Group
+  nso_config:
+    url: "{{ api.api_url }}"
+    username: "{{ api.username }}"
+    password: "{{ api.password }}"
+    data:
+      tailf-ncs:devices:
+        authgroups:
+          group:
+          - name: "{{ api.auth.name }}"
+            umap:
+            - local-user: admin
+              remote-name: "{{ api.auth.username }}"
+              remote-password: "{{ api.auth.password }}"
+              remote-secondary-password: "{{ api.auth.password }}"
+  run_once: True
+  when: install_state == "present"
+
+
+- name: Delete Auth Group
+  nso_config:
+    url: "{{ api.api_url }}"
+    username: "{{ api.username }}"
+    password: "{{ api.password }}"
+    data:
+      tailf-ncs:devices:
+        authgroups:
+          group:
+          - name: "{{ api.auth.name }}"
+            __state: absent
+  run_once: True
+  when: install_state == "absent"
+  tags: [ 'never', 'destroy' ]

@@ -1,0 +1,7 @@
+---
+- name: Setup {{ device_role.name }} Device Role
+  netbox_device_role:
+    netbox_url: "{{ netbox.url }}"
+    netbox_token: "{{ netbox.token }}"
+    data: "{{ device_role }}"
+    state: present

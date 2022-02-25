@@ -1,0 +1,32 @@
+---
+######################################################################################
+
+- hosts: cml.local
+  connection: local
+  gather_facts: False
+  collections:
+  - cisco.cml
+
+  tasks:
+    - include: tasks/cml_utils.yml
+
+######################################################################################
+
+- hosts: nes
+  connection: local
+  gather_facts: False
+  collections:
+  - cisco.nso
+  vars:
+    install_state: absent
+
+  tasks:
+    - name: Load NSO variables
+      include_vars:
+        file: inventories/lab/host_vars/nso.local.yml
+        name: api
+      tags: [ 'always' ]
+
+    - include: tasks/nso/device.yml
+    - include: tasks/nso/authgroup.yml
+

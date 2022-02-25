@@ -1,0 +1,58 @@
+---
+region:
+  name: East
+  slug: east
+  parent_region: IN
+
+# Baseline Configurations
+name_servers:
+  - 172.16.30.10
+  - 4.4.4.4
+ntp_servers:
+  - ntp0.cmllab.test
+  - ntp1.cmllab.test
+aaa_config:
+  hostname: aaa.cmllab.test
+  key: tacacs
+
+syslog_server: log.cmllab.test
+
+management_network:
+  vrf_name: Mgmt-intf
+  gateway: 172.16.100.1
+  mask: 255.255.255.0
+
+# Global Routing Config
+bgp_asn: 65001
+
+igp:
+  type: isis
+  core: SP_CORE
+  access: SP_ACCESS
+
+mpls:
+  ldp_enable: True
+
+segment_routing:
+  enable: True
+  prefer: True
+  ti_lfa: True
+
+multicast_routing:
+  enable: False
+
+access_prefixes:
+  ipv4:
+    - description: Access Loopbacks v4
+      prefix_length: 26
+      prefix_role: access-loopbacks
+    - description: Access Interconnects Range v4
+      prefix_length: 25
+      prefix_role: access-interconnects
+  ipv6:
+    - description: Access Loopbacks v6
+      prefix_length: 64
+      prefix_role: access-loopbacks
+    - description: Access Interconnects Range v6
+      prefix_length: 64
+      prefix_role: access-interconnects

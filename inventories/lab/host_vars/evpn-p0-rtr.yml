@@ -1,0 +1,39 @@
+---
+hostname: evpn-p0-rtr
+mgmt_ip: 172.16.100.10
+id: 10
+
+interfaces:
+  - type: MgmtEth0/RP0/CPU0/
+    number: 0
+    remote_node_id: 100
+  - type: Loopback
+    number: 0
+  - type: GigabitEthernet
+    number: 0/0/0/0
+    remote_node_id: 40
+  - type: GigabitEthernet
+    number: 0/0/0/1
+    remote_node_id: 41
+  - type: GigabitEthernet
+    number: 0/0/0/2
+    remote_node_id: 42
+  - type: GigabitEthernet
+    number: 0/0/0/3
+    remote_node_id: 43
+  - type: GigabitEthernet
+    number: 0/0/0/4
+    remote_node_id: 90
+  - type: GigabitEthernet
+    number: 0/0/0/5
+    remote_node_id: 91
+
+cords:
+  x: -450
+  y: 100
+
+# Netbox Stuff
+rack:
+  name: R-01-01-01
+  position: 17
+  face: front

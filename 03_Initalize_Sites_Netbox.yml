@@ -1,0 +1,210 @@
+# Run with ansible-playbook -i inventories/lab 03_Initialize_Sites_Netbox.yml -e inv=lab -t build
+---
+- hosts: cml_nes
+  connection: local
+  gather_facts: False
+  collections:
+    - netbox.netbox
+
+  vars:
+  - netbox_state: present
+
+  tasks:
+    - name: Load netbox variables
+      include_vars:
+        file: inventories/lab/host_vars/netbox.local.yml
+        name: netbox
+      tags: [ 'always' ]
+      run_once: True
+
+    - name: Get Prefix Information
+      set_fact:
+        v4_prefixes: "{{ query('netbox.netbox.nb_lookup', 'prefixes', 
+                        api_filter='role=global-pool family=4', 
+                        api_endpoint=netbox.url, 
+                        token=netbox.token) }}"
+        v6_prefixes: "{{ query('netbox.netbox.nb_lookup', 'prefixes', 
+                        api_filter='role=global-pool family=6', 
+                        api_endpoint=netbox.url, 
+                        token=netbox.token) }}"
+        core_pri_v4_prefixes: "{{ query('netbox.netbox.nb_lookup', 'prefixes', 
+                        api_filter='role=core-pri-pool family=4', 
+                        api_endpoint=netbox.url, 
+                        token=netbox.token) }}"
+        core_pri_v6_prefixes: "{{ query('netbox.netbox.nb_lookup', 'prefixes', 
+                        api_filter='role=core-pri-pool family=6', 
+                        api_endpoint=netbox.url, 
+                        token=netbox.token) }}"
+        core_ixc_v4_prefixes: "{{ query('netbox.netbox.nb_lookup', 'prefixes', 
+                        api_filter='role=core-interconnects family=4', 
+                        api_endpoint=netbox.url, 
+                        token=netbox.token) }}"
+        core_ixc_v6_prefixes: "{{ query('netbox.netbox.nb_lookup', 'prefixes', 
+                        api_filter='role=core-interconnects family=6', 
+                        api_endpoint=netbox.url, 
+                        token=netbox.token) }}"
+        core_lb_v4_prefixes: "{{ query('netbox.netbox.nb_lookup', 'prefixes', 
+                        api_filter='role=core-loopbacks family=4', 
+                        api_endpoint=netbox.url, 
+                        token=netbox.token) }}"
+        core_lb_v6_prefixes: "{{ query('netbox.netbox.nb_lookup', 'prefixes', 
+                        api_filter='role=core-loopbacks family=6', 
+                        api_endpoint=netbox.url, 
+                        token=netbox.token) }}"
+      run_once: True
+
+    - name: Filter out useless info
+      set_fact:
+        v4_prefixes: "{{ v4_prefixes | json_query('[*].value.prefix') }}"
+        v6_prefixes: "{{ v6_prefixes | json_query('[*].value.prefix') }}"
+        core_pri_v4_prefixes: "{{ core_pri_v4_prefixes | json_query('[*].value.prefix') }}"
+        core_pri_v6_prefixes: "{{ core_pri_v6_prefixes | json_query('[*].value.prefix') }}"
+        core_ixc_v4_prefixes: "{{ core_ixc_v4_prefixes | json_query('[*].value.prefix') }}"
+        core_ixc_v6_prefixes: "{{ core_ixc_v6_prefixes | json_query('[*].value.prefix') }}"
+        core_lb_v4_prefixes: "{{ core_lb_v4_prefixes | json_query('[*].value.prefix') }}"
+        core_lb_v6_prefixes: "{{ core_lb_v6_prefixes | json_query('[*].value.prefix') }}"
+
+      run_once: True
+
+    - name: DEBUG
+      debug:  
+        # msg: "{{ v4_prefixes | json_query('[*].value.prefix') }}"
+        # msg: "{{ access_prefixes | default(omit) }}"
+        # msg: "{{ core_prefixes.ipv4[0].prefix_role }}"
+        msg: "{{ v4_prefixes }} {{ v6_prefixes }} {{ core_pri_v4_prefixes }}"
+        # msg: "{{ core_prefixes | build_dict(site.slug) }}"
+
+      run_once: True
+
+    # Main Range for Region
+    # - name: Create Prefixes
+    #   netbox_prefix:
+    #     netbox_url: "{{ netbox.url }}"
+    #     netbox_token: "{{ netbox.token }}"
+    #     data: "{{ item }}"
+    #     state: "{{ netbox_state }}"
+    #     first_available: True
+    #   loop: "{{ core_prefixes | build_dict(site.slug) }}"
+    #   loop_control:
+    #     label: "{{ item.description }}"
+    #   register: primary
+    #   run_once: True
+
+
+    # # V4 Ranges
+    # - name: Create V4 Region Ranges
+    #   netbox_prefix:
+    #     netbox_url: "{{ netbox.url }}"
+    #     netbox_token: "{{ netbox.token }}"
+    #     data:
+    #       description: "{{ item['description'] }}"
+    #       family: 4
+    #       parent: "{{ primary.results.0.prefix.prefix }}"
+    #       prefix_length: "{{ item['prefix_length'] }}"
+    #       is_pool: False
+    #       prefix_role: "{{ item['prefix_role'] }}"
+    #       site: "{{ item['site'] }}"
+    #       status: container
+    #     state: "{{ install_state }}"
+    #     first_available: True
+    #   loop: "{{ topology.netbox.prefix_pools_v4_main }}"
+    #   loop_control:
+    #     loop_var: item
+    #   register: region_pool
+    
+    # - name: Create V4 Core Pool Ranges
+    #   netbox_prefix:
+    #     netbox_url: "{{ netbox.url }}"
+    #     netbox_token: "{{ netbox.token }}"
+    #     data:
+    #       description: "{{ item['description'] }}"
+    #       family: 4
+    #       parent: "{{ region_pool.results.0.prefix.prefix }}"
+    #       prefix_length: "{{ item['prefix_length'] }}"
+    #       is_pool: False
+    #       prefix_role: "{{ item['prefix_role'] }}"
+    #       site: "{{ item['site'] }}"
+    #       status: container
+    #     state: "{{ install_state }}"
+    #     first_available: True
+    #   loop: "{{ topology.netbox.prefix_pools_v4_core }}"
+    #   loop_control:
+    #     loop_var: item
+
+    # - name: Create V4 Access Ranges
+    #   netbox_prefix:
+    #     netbox_url: "{{ netbox.url }}"
+    #     netbox_token: "{{ netbox.token }}"
+    #     data:
+    #       description: "{{ item['description'] }}"
+    #       family: 4
+    #       parent: "{{ region_pool.results.1.prefix.prefix }}"
+    #       prefix_length: "{{ item['prefix_length'] }}"
+    #       is_pool: False
+    #       prefix_role: "{{ item['prefix_role'] }}"
+    #       site: "{{ item['site'] }}"
+    #       status: container
+    #     state: "{{ install_state }}"
+    #     first_available: True
+    #   loop: "{{ topology.netbox.prefix_pools_v4_access }}"
+    #   loop_control:
+    #     loop_var: item
+  
+    # # V6 Ranges
+    # - name: Create V6 Region Ranges
+    #   netbox_prefix:
+    #     netbox_url: "{{ netbox.url }}"
+    #     netbox_token: "{{ netbox.token }}"
+    #     data:
+    #       description: "{{ item['description'] }}"
+    #       family: 6
+    #       parent: "{{ primary.results.1.prefix.prefix }}"
+    #       prefix_length: "{{ item['prefix_length'] }}"
+    #       is_pool: False
+    #       prefix_role: "{{ item['prefix_role'] }}"
+    #       site: "{{ item['site'] }}"
+    #       status: container
+    #     state: "{{ install_state }}"
+    #     first_available: True
+    #   loop: "{{ topology.netbox.prefix_pools_v6_main }}"
+    #   loop_control:
+    #     loop_var: item
+    #   register: region_pool
+    
+    # - name: Create V6 Core Pool Ranges
+    #   netbox_prefix:
+    #     netbox_url: "{{ netbox.url }}"
+    #     netbox_token: "{{ netbox.token }}"
+    #     data:
+    #       description: "{{ item['description'] }}"
+    #       family: 6
+    #       parent: "{{ region_pool.results.0.prefix.prefix }}"
+    #       prefix_length: "{{ item['prefix_length'] }}"
+    #       is_pool: False
+    #       prefix_role: "{{ item['prefix_role'] }}"
+    #       site: "{{ item['site'] }}"
+    #       status: container
+    #     state: "{{ install_state }}"
+    #     first_available: True
+    #   loop: "{{ topology.netbox.prefix_pools_v6_core }}"
+    #   loop_control:
+    #     loop_var: item
+
+    # - name: Create V6 Access Ranges
+    #   netbox_prefix:
+    #     netbox_url: "{{ netbox.url }}"
+    #     netbox_token: "{{ netbox.token }}"
+    #     data:
+    #       description: "{{ item['description'] }}"
+    #       family: 6
+    #       parent: "{{ region_pool.results.1.prefix.prefix }}"
+    #       prefix_length: "{{ item['prefix_length'] }}"
+    #       is_pool: False
+    #       prefix_role: "{{ item['prefix_role'] }}"
+    #       site: "{{ item['site'] }}"
+    #       status: container
+    #     state: "{{ install_state }}"
+    #     first_available: True
+    #   loop: "{{ topology.netbox.prefix_pools_v6_access }}"
+    #   loop_control:
+    #     loop_var: item

@@ -1,0 +1,24 @@
+---
+- name: Setup Racks
+  netbox_rack:
+    netbox_url: "{{ netbox.url }}"
+    netbox_token: "{{ netbox.token }}"
+    data:
+      site: "{{ site.slug | lower }}"
+      name: "{{ site.slug | upper }}-{{ item.name }}"
+      width: "{{ item.width }}"
+      u_height: "{{ item.height }}"
+      status: active
+    state: "{{ netbox_state }}"
+  loop: "{{ racks }}"
+  when: racks is defined and netbox_state == 'present'
+
+- name: Remove Racks
+  netbox_rack:
+    netbox_url: "{{ netbox.url }}"
+    netbox_token: "{{ netbox.token }}"
+    data:
+      name: "{{ site.slug | upper }}-{{ item.name }}"
+    state: "{{ netbox_state }}"
+  loop: "{{ racks }}"
+  when: racks is defined and netbox_state == 'absent'

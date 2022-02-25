@@ -1,0 +1,113 @@
+---
+
+url: http://127.0.0.1:8000
+token: 0123456789abcdef0123456789abcdef01234567
+
+# Initialize vars
+
+regions:
+  - name: California
+    slug: ca
+    parent_region: us
+  - name: Indiana
+    slug: in
+    parent_region: us
+  - name: Kentucky
+    slug: ky
+    parent_region: us
+  - name: Pennsylvania
+    slug: pa
+    parent_region: us
+
+rirs:
+  - name: RFC-1918
+    slug: rfc1918
+    is_private: True
+  - name: RFC-4193
+    slug: rfc4193
+    is_private: True
+  - name: ARIN
+    slug: arin
+
+aggregates:
+  - prefix: 10.0.0.0/8
+    description: Private RFC-1918 Space
+    rir: rfc1918
+  - prefix: 172.16.0.0/12
+    description: Private RFC-1918 Space
+    rir: rfc1918
+  - prefix: 192.168.0.0/16
+    description: Private RFC-1918 Space
+    rir: rfc1918
+  - prefix: fd00::/8
+    description: Private RFC-4193 Space
+    rir: rfc4193
+
+# Device Stuff
+manufacturers:
+  - name: Cisco
+    slug: cisco
+
+platforms:
+  - name: IOS XE
+    slug: iosxe
+    manufacturer: cisco
+    napalm_driver: ios
+  - name: IOS XR
+    slug: iosxr
+    manufacturer: cisco
+    napalm_driver: iosxr
+  - name: Virtual
+    slug: virtual
+
+device_roles:
+  - name: Management Switch
+    slug: mgmt-sw
+    color: 607d8b 
+    vm_role: false
+  - name: Access Provider Edge
+    slug: a-pe-rtr
+    color: ffeb3b
+    vm_role: false
+  - name: Aggregation
+    slug: agg-rtr
+    color: 4caf50
+    vm_role: false
+  - name: Pre-Aggregation
+    slug: pa-rtr
+    color: cddc39
+    vm_role: false
+  - name: Provider Edge Router
+    slug: pe-rtr
+    color: ff9800
+    vm_role: false
+  - name: Provider Router
+    slug: p-rtr
+    color: 03a9f4
+    vm_role: false
+  - name: Services Route Reflector
+    slug: srr-rtr
+    color: aa1409
+    vm_role: false
+  - name: Transport Route Reflector
+    slug: trr-rtr
+    color: 2196f3
+    vm_role: false
+
+ipam_roles:
+  - name: Global Pool
+    slug: global-pool
+  - name: Primary Pool
+    slug: pri-pool
+  - name: Core Primary Pool
+    slug: core-pri-pool
+  - name: Access Primary Pool
+    slug: access-pri-pool
+  - name: Core-Interconnects
+    slug: core-interconnects
+  - name: Access-Interconnects
+    slug: access-interconnects
+  - name: Core-Loopbacks
+    slug: core-loopbacks
+  - name: Access-Loopbacks
+    slug: access-Loopbacks

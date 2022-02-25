@@ -1,0 +1,44 @@
+---
+site:
+  name: Site1
+  slug: site1
+  id: 11
+  time_zone: America/New_York
+
+contact:
+  name: Joe Shmoe
+  email: joe@shmoe.com
+  phone: 555-555-5555
+
+# Rack Info - Name is Floor and Row - R-01-01-01 = Rack on floor 1, row 1, rack 1
+racks:
+  - name:  R-01-01-01
+    width: 19
+    height: 45
+  - name:  R-01-01-02
+    width: 19
+    height: 45
+  - name:  R-01-01-03
+    width: 19
+    height: 45
+  - name:  R-01-01-04
+    width: 19
+    height: 45
+  - name:  R-01-01-05
+    width: 19
+    height: 45
+  - name:  R-01-02-01
+    width: 19
+    height: 45
+  - name:  R-01-02-02
+    width: 19
+    height: 45
+  - name:  R-01-02-03
+    width: 19
+    height: 45
+  - name:  R-01-02-04
+    width: 19
+    height: 45
+  - name:  R-01-02-05
+    width: 19
+    height: 45

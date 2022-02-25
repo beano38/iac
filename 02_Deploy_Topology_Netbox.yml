@@ -1,0 +1,46 @@
+# Run with ansible-playbook -i inventories/lab 02_Deploy_Topology_Netbox.yml -e inv=lab -t build
+---
+- hosts: cml_nes
+  connection: local
+  gather_facts: False
+  collections:
+    - netbox.netbox
+
+  tasks:
+    - name: Load netbox variables
+      include_vars:
+        file: inventories/{{ inv | default('lab') }}/host_vars/netbox.local.yml
+        name: netbox
+      tags: [ 'always' ]
+      run_once: True
+
+    - name: DEBUGGGGGGGINNNN
+      debug:
+        msg: "{{ inventory_file }}"
+
+
+    - name: Build Topology in Netbox
+      vars:
+        - netbox_state: present
+      block:
+        - include: tasks/netbox/region.yml
+          throttle: 1
+        - include: tasks/netbox/site.yml
+          throttle: 1
+        - include: tasks/netbox/rack.yml
+          throttle: 1
+        - include: tasks/netbox/device.yml
+      tags: [ 'never', 'build']
+
+    - name: Destroy Topology in Netbox
+      vars:
+        - netbox_state: absent
+      block:
+        - include: tasks/netbox/device.yml
+        - include: tasks/netbox/rack.yml
+          throttle: 1
+        - include: tasks/netbox/site.yml
+          throttle: 1
+        - include: tasks/netbox/region.yml
+          throttle: 1
+      tags: [ 'never', 'destroy']

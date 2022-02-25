@@ -1,0 +1,7 @@
+---
+- name: Setup {{ platform.name }} Platform
+  netbox_platform:
+    netbox_url: "{{ netbox.url }}"
+    netbox_token: "{{ netbox.token }}"
+    data: "{{ platform }}"
+    state: present

@@ -1,0 +1,8 @@
+---
+cml:
+  image_def: False
+  node_def: external_connector
+
+device_type: cml_external_conn
+
+platform: virtual

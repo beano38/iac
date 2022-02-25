@@ -1,0 +1,14 @@
+---
+- name: Sync from all Network Elements
+  nso_action:
+    url: "{{ api.api_url }}"
+    username: "{{ api.username }}"
+    password: "{{ api.password }}"
+    path: /ncs:devices/sync-from
+  run_once: True
+  register: sync
+
+- name: Debugging
+  debug:
+    var: sync
+  when: debug

@@ -1,0 +1,16 @@
+---
+# Netbox Stuff
+device_role: srr-rtr
+
+bgp:
+  address_families:
+    - name: ipv4 unicast
+      type: transport
+    - name: ipv6 unicast
+      type: transport
+    - name: l2vpn evpn
+      type: service
+    - name: vpnv4 unicast
+      type: service
+    - name: vpnv6 unicast
+      type: service

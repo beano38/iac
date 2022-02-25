@@ -1,0 +1,52 @@
+- hosts: netbox.local
+  connection: local
+  gather_facts: False
+  collections:
+    - netbox.netbox
+
+  # `-e` or `--extra-vars` parameters can be defined in place of environment variables for netbox_url 
+  # and netbox_token as well as template_root. Default is environment vars
+  vars:
+    template_root: "{{ template_dir | default('../device_types/') }}"
+
+  tasks:
+  - name: "Find files reccursively in root diretory {{ template_root }}"
+    find:
+      paths:
+        - "{{ template_root }}"
+      patterns:
+        - ".*\\.yml"
+        - ".*\\.yaml"
+      file_type: file
+      use_regex: True
+      recurse: True
+      depth: 2
+    register: template_files
+
+  - name: "Parse file data for filenames from directory"
+    set_fact: template_files="{{ template_files.files | map(attribute='path') | list }}"
+
+  - name: "Get templates vars from imported files"
+    include_vars:
+      file: "{{ item }}"
+    with_items: "{{ template_files }}"
+    register: templates
+
+  - name: "Cleanup templates tree"
+    set_fact:
+      templates: "{{ templates.results | map(attribute='ansible_facts') | list }}"
+
+  - name: "Build device template in Netbox"
+    netbox_device_type:
+      netbox_url: "{{ url }}"
+      netbox_token: "{{ token }}"
+      data:
+        manufacturer: "{{ item['manufacturer'] }}"
+        model: "{{ item['model'] }}"
+        slug: "{{ item['slug'] }}"
+        u_height: "{{ item['u_height'] if defined | default(false) else omit  }}"
+        is_full_depth: "{{ item['is_full_depth'] if defined | default(false) else omit }}"
+      state: present
+    with_items: "{{ templates }}"
+    loop_control:
+      label: "{{ item['model'] }}"

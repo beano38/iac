@@ -1,0 +1,10 @@
+---
+# CML external Connector
+
+hostname: ext-conn-1
+id: 101
+
+interfaces:
+  - type: port
+    number: 1
+    remote_node_id: 100

@@ -1,0 +1,26 @@
+---
+- name: Setup Site
+  netbox_site:
+    netbox_url: "{{ netbox.url }}"
+    netbox_token: "{{ netbox.token }}"
+    data:
+      name: "{{ site.name }}"
+      slug: "{{ site.slug | lower }}"
+      time_zone: "{{ site.time_zone }}"
+      status: active
+      region: "{{ region.slug | lower }}"
+      contact_name: "{{ contact.name }}"
+      contact_email: "{{ contact.email }}"
+      contact_phone: "{{ contact.phone }}"
+      asn: "{{ bgp_asn }}"
+    state: "{{ netbox_state }}"
+  when: netbox_state == 'present'
+
+- name: Remove Site
+  netbox_site:
+    netbox_url: "{{ netbox.url }}"
+    netbox_token: "{{ netbox.token }}"
+    data:
+      name: "{{ site.name }}"
+    state: absent
+  when: netbox_state == 'absent'

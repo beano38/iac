@@ -1,0 +1,35 @@
+---
+- name: Device Inventory
+  netbox_device:
+    netbox_url: "{{ netbox.url }}"
+    netbox_token: "{{ netbox.token }}"
+    data:
+      name: "{{ hostname }}"
+      device_type: "{{ device_type }}"
+      device_role: "{{ device_role }}"
+      platform: "{{ platform }}"
+      site: "{{ site.slug | lower }}"
+      status: active
+    state: "{{ netbox_state }}"
+  when: netbox_state == "present"
+
+- name: Rack Layout
+  netbox_device:
+    netbox_url: "{{ netbox.url }}"
+    netbox_token: "{{ netbox.token }}"
+    data:
+      name: "{{ hostname }}"
+      rack: "{{ site.slug | upper + '-' + rack.name }}"
+      position: "{{ rack.position }}"
+      face: "{{ rack.face }}"
+    state: "{{ netbox_state }}"
+  when: rack.name is defined and netbox_state == "present"
+
+- name: Remove Device from Inventory
+  netbox_device:
+    netbox_url: "{{ netbox.url }}"
+    netbox_token: "{{ netbox.token }}"
+    data:
+      name: "{{ hostname }}"
+    state: "{{ netbox_state }}"
+  when: netbox_state == "absent"

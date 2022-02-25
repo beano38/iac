@@ -1,0 +1,7 @@
+---
+- name: Setup {{ aggregate.prefix }} Aggregate
+  netbox_aggregate:
+    netbox_url: "{{ netbox.url }}"
+    netbox_token: "{{ netbox.token }}"
+    data: "{{ aggregate }}"
+    state: present

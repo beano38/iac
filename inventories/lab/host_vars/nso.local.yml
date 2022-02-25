@@ -1,0 +1,18 @@
+---
+hostname: 172.28.128.3
+username: admin
+password: admin
+
+api_url: http://172.28.128.3:8080/jsonrpc
+
+auth:
+  username: nso
+  password: cisco123
+  name: lab
+
+install_dir: $HOME/nso-5.6.1
+
+ansible_host: 172.28.128.3
+ansible_user: vagrant
+ansible_ssh_private_key_file: ~/.vagrant.d/insecure_private_key
+ansible_python_interpreter:  /usr/bin/python3

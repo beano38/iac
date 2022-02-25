@@ -1,0 +1,77 @@
+all:
+  children:
+    core:
+      hosts:
+        evpn-p0-rtr:
+        evpn-p1-rtr:
+    abr:
+      hosts:
+        evpn-pe0-rtr:
+        evpn-pe1-rtr:
+        evpn-pe2-rtr:
+        evpn-pe3-rtr:
+    pce:
+      hosts:
+        evpn-rr0-rtr:
+        evpn-rr1-rtr:
+    rr:
+      hosts:
+        evpn-rr0-rtr:
+        evpn-rr1-rtr:
+    cml:
+      hosts:
+        ext-conn-1:
+        unmanaged-switch-1:
+
+    cml_nes:
+      hosts:
+        evpn-p[0:1]-rtr:
+        evpn-pe[0:3]-rtr:
+        evpn-rr[0:1]-rtr:
+        ext-conn-1:
+        unmanaged-switch-1:
+    nes:
+      hosts:
+        evpn-p[0:1]-rtr:
+        evpn-pe[0:3]-rtr:
+        evpn-rr[0:1]-rtr:
+
+    servers:
+        hosts:
+          cml.local:
+          nso.local:
+          netbox.local:
+
+east:
+  children:
+    site1:
+      hosts:
+        evpn-p[0:1]-rtr:
+        evpn-pe[0:1]-rtr:
+    site2:
+      hosts:
+        evpn-pe[2:3]-rtr:
+    site3:
+      hosts:
+        evpn-rr[0:1]-rtr:
+virtual_lab:
+  children:
+    virtual:
+      hosts:
+        ext-conn-1:
+        unmanaged-switch-1:
+
+
+device_types:
+  children:
+    xrv9000:
+      hosts:
+        evpn-p[0:1]-rtr:
+        evpn-pe[0:3]-rtr:
+        evpn-rr[0:1]-rtr:
+    unmanaged_switch:
+      hosts:
+        unmanaged-switch-1:
+    ext_conn:
+      hosts:
+        ext-conn-1:

@@ -1,0 +1,28 @@
+---
+- name: Add Devices to device-group
+  nso_config:
+    url: "{{ api.api_url }}"
+    username: "{{ api.username }}"
+    password: "{{ api.password }}"
+    data:
+      tailf-ncs:devices:
+        device-group:
+        - name: "{{ site.name }}"
+          device-name:
+          - "{{ hostname }}"
+  when: install_state == "present"
+
+- name: Delete a device from device-group
+  nso_config:
+    url: "{{ api.api_url }}"
+    username: "{{ api.username }}"
+    password: "{{ api.password }}"
+    data:
+      tailf-ncs:devices:
+        device-group:
+        - name: "{{ site.name }}"
+          device-name:
+          - "{{ hostname }}"
+          __state: absent
+  when: install_state == "absent"
+  tags: [ 'never', 'destroy' ]

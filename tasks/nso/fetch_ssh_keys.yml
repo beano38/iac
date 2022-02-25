@@ -1,0 +1,13 @@
+- name: Fetch SSH Keys
+  nso_action:
+    url: "{{ api.api_url }}"
+    username: "{{ api.username }}"
+    password: "{{ api.password }}"
+    path: /ncs:devices/fetch-ssh-host-keys
+  run_once: True
+  register: ssh_keys
+
+- name: Debugging
+  debug:
+    var: ssh_keys
+  when: debug

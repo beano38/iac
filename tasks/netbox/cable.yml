@@ -1,0 +1,18 @@
+---
+- name: Build Cables
+  netbox_cable:
+    netbox_url: "{{ netbox_url }}"
+    netbox_token: "{{ netbox_token }}"
+    data:
+      termination_a_type: dcim.interface
+      termination_a:
+        device: "{{ interconnect.device_interfaces[0].device }}"
+        name: "GigabitEthernet{{ interconnect.device_interfaces[0].intf_number }}"  # Come back and fix for different interface types
+      termination_b_type: dcim.interface
+      termination_b:
+        device: "{{ interconnect.device_interfaces[1].device }}"
+        name: "GigabitEthernet{{ interconnect.device_interfaces[1].intf_number }}"  # Come back and fix for different interface types
+      type: cat6
+      status: connected
+      label: "{{ interconnect.name }}"
+    state: present

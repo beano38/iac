@@ -1,0 +1,65 @@
+---
+######################################################################################
+
+- hosts: cml_nes
+  connection: local
+  gather_facts: False
+
+  tasks:
+    # - name: DEBUGGGGGGGINNNN
+    #   debug:
+    #     msg: "{{ cml.node_def }}"
+    #   tags: [ 'never', 'generate_cml' ]
+      
+    - name: Build CML Topology
+      copy: 
+        content: "{{ ansible_play_hosts | build_topology(hostvars) | to_nice_yaml }}"
+        dest: temp/topology.yaml
+      run_once: True
+      tags: [ 'never', 'generate_cml' ]
+
+######################################################################################
+
+- hosts: cml.local
+  connection: local
+  gather_facts: False
+  collections:
+  - cisco.cml
+
+  tasks:
+    - include: tasks/cml_utils.yml
+
+######################################################################################
+
+- hosts: nes
+  connection: local
+  gather_facts: False
+  collections:
+  - cisco.nso
+  vars:
+    install_state: present
+    debug: True
+
+  tasks:
+    - name: Load NSO variables
+      include_vars:
+        file: inventories/lab/host_vars/nso.local.yml
+        name: api
+      tags: [ 'always' ]
+
+    - include: tasks/nso/authgroup.yml
+    - include: tasks/nso/device.yml
+    # - include: tasks/nso/fetch_ssh_keys.yml
+    # - include: tasks/nso/sync_from.yml
+
+
+- hosts: nso.local
+  gather_facts: True
+
+  vars:
+    netsim_hosts: "{{ groups['nes'] | difference(hostvars['cml.local'].devices) }}"
+    # Difference of devices running in CML versus the group under test (groups['groupname'])
+  
+  tasks:
+    - include: tasks/nso/build_netsims.yml
+

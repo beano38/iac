@@ -1,0 +1,7 @@
+---
+- name: Setup {{ rir.name }} Registry
+  netbox_rir:
+    netbox_url: "{{ netbox.url }}"
+    netbox_token: "{{ netbox.token }}"
+    data: "{{ rir }}"
+    state: present

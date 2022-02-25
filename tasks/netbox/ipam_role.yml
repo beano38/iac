@@ -1,0 +1,6 @@
+- name: Load {{ ipam_role.name }} Role
+  netbox_ipam_role:
+    netbox_url: "{{ netbox.url }}"
+    netbox_token: "{{ netbox.token }}"
+    data: "{{ ipam_role }}"
+    state: present

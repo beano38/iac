@@ -1,0 +1,13 @@
+---
+hostname: 192.168.1.77
+lab_name: EVPN_Lab_Topology
+lab_state: present  # 'absent', 'present', 'started', 'stopped', 'wiped'
+
+username: admin
+password: Cisco123!
+
+devices: # Devices to Start with CML
+ - unmanaged-switch-1
+ - ext-conn-1
+ # - evpn-p0-rtr
+

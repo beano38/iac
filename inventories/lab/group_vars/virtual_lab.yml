@@ -1,0 +1,5 @@
+---
+region:
+  name: Virtual Lab
+  slug: virt_lab
+  parent_region: US

@@ -1,0 +1,120 @@
+---
+- name: Create Primary Prefixes
+  netbox_prefix:
+    netbox_url: "{{ netbox.url }}"
+    netbox_token: "{{ netbox.token }}"
+    data:
+      description: "{{ prefix.description }}"
+      family: "{{ prefix.family }}"
+      parent: "{{ prefix.parent }}"
+      prefix_length: "{{ prefix.length }}"
+      is_pool: False
+      status: container
+      prefix_role: pri-pool
+      site: "{{ site.name }}"
+    state: present
+    first_available: True
+  register: primary
+
+- debug:
+    msg: "{{ primary }}"
+
+# # V4 Ranges
+# - name: Create V4 Region Ranges
+#   netbox_prefix:
+#     netbox_url: "{{ api.url }}"
+#     netbox_token: "{{ api.token }}"
+#     data:
+#       description: "{{ item['description'] }}"
+#       family: 4
+#       parent: "{{ primary.results.0.prefix.prefix }}"
+#       prefix_length: "{{ item['prefix_length'] }}"
+#       is_pool: False
+#       prefix_role: "{{ item['prefix_role'] }}"
+#       site: "{{ item['site'] }}"
+#       status: container
+#     state: "{{ install_state }}"
+#     first_available: True
+#   register: region_pool
+
+# - name: Create V4 Core Pool Ranges
+#   netbox_prefix:
+#     netbox_url: "{{ api.url }}"
+#     netbox_token: "{{ api.token }}"
+#     data:
+#       description: "{{ item['description'] }}"
+#       family: 4
+#       parent: "{{ region_pool.results.0.prefix.prefix }}"
+#       prefix_length: "{{ item['prefix_length'] }}"
+#       is_pool: False
+#       prefix_role: "{{ item['prefix_role'] }}"
+#       site: "{{ item['site'] }}"
+#       status: container
+#     state: "{{ install_state }}"
+#     first_available: True
+
+# - name: Create V4 Access Ranges
+#   netbox_prefix:
+#     netbox_url: "{{ api.url }}"
+#     netbox_token: "{{ api.token }}"
+#     data:
+#       description: "{{ item['description'] }}"
+#       family: 4
+#       parent: "{{ region_pool.results.1.prefix.prefix }}"
+#       prefix_length: "{{ item['prefix_length'] }}"
+#       is_pool: False
+#       prefix_role: "{{ item['prefix_role'] }}"
+#       site: "{{ item['site'] }}"
+#       status: container
+#     state: "{{ install_state }}"
+#     first_available: True
+
+# # V6 Ranges
+# - name: Create V6 Region Ranges
+#   netbox_prefix:
+#     netbox_url: "{{ api.url }}"
+#     netbox_token: "{{ api.token }}"
+#     data:
+#       description: "{{ item['description'] }}"
+#       family: 6
+#       parent: "{{ primary.results.1.prefix.prefix }}"
+#       prefix_length: "{{ item['prefix_length'] }}"
+#       is_pool: False
+#       prefix_role: "{{ item['prefix_role'] }}"
+#       site: "{{ item['site'] }}"
+#       status: container
+#     state: "{{ install_state }}"
+#     first_available: True
+#   register: region_pool
+
+# - name: Create V6 Core Pool Ranges
+#   netbox_prefix:
+#     netbox_url: "{{ api.url }}"
+#     netbox_token: "{{ api.token }}"
+#     data:
+#       description: "{{ item['description'] }}"
+#       family: 6
+#       parent: "{{ region_pool.results.0.prefix.prefix }}"
+#       prefix_length: "{{ item['prefix_length'] }}"
+#       is_pool: False
+#       prefix_role: "{{ item['prefix_role'] }}"
+#       site: "{{ item['site'] }}"
+#       status: container
+#     state: "{{ install_state }}"
+#     first_available: True
+
+# - name: Create V6 Access Ranges
+#   netbox_prefix:
+#     netbox_url: "{{ api.url }}"
+#     netbox_token: "{{ api.token }}"
+#     data:
+#       description: "{{ item['description'] }}"
+#       family: 6
+#       parent: "{{ region_pool.results.1.prefix.prefix }}"
+#       prefix_length: "{{ item['prefix_length'] }}"
+#       is_pool: False
+#       prefix_role: "{{ item['prefix_role'] }}"
+#       site: "{{ item['site'] }}"
+#       status: container
+#     state: "{{ install_state }}"
+#     first_available: True

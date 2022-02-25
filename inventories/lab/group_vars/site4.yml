@@ -1,0 +1,23 @@
+---
+site:
+  name: Site4
+  slug: site4
+  id: 14
+  time_zone: America/New_York
+
+contact:
+  name: Jackie Shmoe
+  email: jackie@shmoe.com
+  phone: 555-555-8888
+
+# Rack Info - Name is Floor and Row - R-01-01-01 = Rack on floor 1, row 1, rack 1
+racks:
+  - name:  R-01-01-01
+    width: 19
+    height: 45
+  - name:  R-01-01-02
+    width: 19
+    height: 45
+  - name:  R-01-01-03
+    width: 19
+    height: 45

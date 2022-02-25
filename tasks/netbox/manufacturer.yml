@@ -1,0 +1,7 @@
+---
+- name: Setup {{ manufacturer.name }} Manufacturer
+  netbox_manufacturer:
+    netbox_url: "{{ netbox.url }}"
+    netbox_token: "{{ netbox.token }}"
+    data: "{{ manufacturer }}"
+    state: present

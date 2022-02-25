@@ -1,0 +1,6 @@
+---
+region:
+  name: West
+  id: 2
+  slug: west
+  parent_region: IN
