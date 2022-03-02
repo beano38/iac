@@ -235,7 +235,59 @@ class FilterModule(object):
 
         uses the _all_vars method in this class to gather all of the data
         uses the _generate_links method in this class to provide link data for CML
+        uses the _render_bootstrap_config method in this class to create a bootstrap config
 
+        ****NOTE****
+        in the config_dict section, make sure the variables are defined in the hostvars that you want rendered in the Jinja2 template
+        
+        ****REQUIRED****
+        hostname(str): the hostname of the device
+        id(int): unique id of the device in the network
+        
+        interfaces(list of dictionaries):
+            type(str): interface type
+            number(str or int): interface number
+            remote_node_id(int): is the 'z' device-id this interface is connected to
+
+        cml(dictionary):
+            image_def(str): image definition predefined in CML server
+            node_def(str): node definition predefined in CML server
+
+        render_config(dictionary):
+            type(str): subfolder that exists in ./temp to look for the jinja template
+            cml_template(str): jinja2 template name that will be rendered for bootstrap config in CML
+
+        ****Optional**** Inputs per device
+        cords(dictionary): coordinates in CML, defaults to random placement
+            x(str): x coordinates
+            y(str): y coordinates
+
+        Example - group_vars/iosxe.yml
+        ---
+        cml:
+          image_def: csr1000v-170301a
+          node_def: csr1000v
+
+        render_config:
+          type: iosxe
+          cml_template: cml_bootstrap.j2
+
+        Example - host_vars/core01rtr.yml
+        ---
+        hostname: core01rtr
+        id: 30
+
+        interfaces:
+          - type: GigabitEthernet
+            number: 0/0/0/1
+            remote_node_id: 90
+          - type: GigabitEthernet
+            number: 0/0/0/2
+            remote_node_id: 91
+        
+        cords:
+          x: -250
+          y: -50
         returns: a dictionary that describes what the CML topology looks like
 
         Example Ansible task:
