@@ -254,7 +254,7 @@ class FilterModule(object):
             node_def(str): node definition predefined in CML server
 
         render_config(dictionary):
-            type(str): subfolder that exists in ./temp to look for the jinja template
+            type(str): subfolder that exists in ./templates to look for the jinja template
             cml_template(str): jinja2 template name that will be rendered for bootstrap config in CML
 
         ****Optional**** Inputs per device
